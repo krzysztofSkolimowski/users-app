@@ -1,0 +1,241 @@
+openapi: 3.0.3
+info:
+  title: Users
+  description: Microservice enabling user management
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:8080/
+    variables:
+      hostname:
+        default: localhost
+paths:
+  /api:
+    get:
+      summary: API documentation
+      responses:
+        '200':
+          description: OK
+          content:
+            text/html:
+              schema:
+                type: string
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /health:
+    get:
+      summary: Health check
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: OK
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /users:
+    get:
+      operationId: getUsers
+      summary: Fetches a paginated list of users, allowing to filter by a matching field
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Users'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+
+    post:
+      summary: Create a new user
+      requestBody:
+        description: User object to be created
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostUser'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /users/{userID}:
+    patch:
+      summary: Update an existing user
+      parameters:
+        - in: path
+          name: userID
+          schema:
+            type: string
+          required: true
+      requestBody:
+        description: User object to be updated
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchUser'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+            schema:
+              $ref: '#/components/schemas/Error'
+    delete:
+      summary: Delete an existing user
+      parameters:
+        - in: path
+          name: userID
+          schema:
+            type: string
+          required: true
+      responses:
+        '204':
+          description: No Content
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+components:
+  schemas:
+    Users:
+      type: object
+      required:
+        - users
+      properties:
+        users:
+          type: array
+          items:
+            $ref: '#/components/schemas/User'
+
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: "123e4567-e89b-12d3-a456-426655440000"
+        first_name:
+          type: string
+          example: "Alice"
+        last_name:
+          type: string
+          example: "Bob"
+        nickname:
+          type: string
+          example: "AB123"
+        email:
+          type: string
+          format: email
+          example: "alice@bob.com"
+        country:
+          type: string
+          example: "UK
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+      required:
+        - id
+        - first_name
+        - last_name
+        - nickname
+        - email
+        - country
+
+    PostUser:
+      type: object
+      properties:
+        first_name:
+          type: string
+        last_name:
+          type: string
+        nickname:
+          type: string
+        email:
+          type: string
+          format: email
+        country:
+          type: string
+        password:
+          type: string
+          format: password
+      required:
+        - first_name
+        - last_name
+        - nickname
+        - email
+        - country
+        - password
+
+    PatchUser:
+      type: object
+      properties:
+        first_name:
+          type: string
+        last_name:
+          type: string
+        nickname:
+          type: string
+        email:
+          type: string
+          format: email
+        country:
+          type: string
+
+    Error:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+
+
