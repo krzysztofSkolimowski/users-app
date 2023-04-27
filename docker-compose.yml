@@ -1,0 +1,31 @@
+version: '3.8'
+name: 'users-app'
+services:
+  app:
+    build:
+      context: docker/app
+    volumes:
+      - ./internal:/internal
+      - ./api:/api
+      - ./.go/pkg:/go/pkg
+      - ./.go-cache:/go-cache
+    working_dir: /internal
+    ports:
+      - "127.0.0.1:$PORT:$PORT"
+    env_file:
+      - .env
+    environment:
+      SERVER_TO_RUN: http
+      GOCACHE: /go-cache
+    depends_on:
+      - mysql
+
+  mysql:
+    image: mariadb:10
+    env_file:
+      - .env
+    volumes:
+      - ./sql/schema.sql:/docker-entrypoint-initdb.d/schema.sql
+    ports:
+      - "127.0.0.1:3306:3306"
+    restart: unless-stopped

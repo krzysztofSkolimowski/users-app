@@ -9,24 +9,10 @@ servers:
     variables:
       hostname:
         default: localhost
-paths:
-  /api:
-    get:
-      summary: API documentation
-      responses:
-        '200':
-          description: OK
-          content:
-            text/html:
-              schema:
-                type: string
-        default:
-          description: unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
+security:
+  - basicAuth: [ ]
 
+paths:
   /health:
     get:
       summary: Health check
@@ -117,8 +103,8 @@ paths:
           description: unexpected error
           content:
             application/json:
-            schema:
-              $ref: '#/components/schemas/Error'
+              schema:
+                $ref: '#/components/schemas/Error'
     delete:
       summary: Delete an existing user
       parameters:
@@ -138,6 +124,10 @@ paths:
                 $ref: '#/components/schemas/Error'
 
 components:
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
   schemas:
     Users:
       type: object
@@ -171,7 +161,7 @@ components:
           example: "alice@bob.com"
         country:
           type: string
-          example: "UK
+          example: "UK"
         created_at:
           type: string
           format: date-time
