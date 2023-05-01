@@ -28,20 +28,6 @@ func toDomainUsers(users []UserDTO) []domain.User {
 	return result
 }
 
-type MockRepo struct {
-	users map[uuid.UUID]UserDTO
-}
-
-func (m *MockRepo) AddUser(user domain.User) (domain.UserID, error) {
-	_, ok := m.users[user.ID]
-	if ok {
-		return domain.UserID{}, domain.ErrUserAlreadyExists
-	}
-
-	m.users[user.ID] = fromDomain(user)
-	return user.ID, nil
-}
-
 func fromDomain(user domain.User) UserDTO {
 	return UserDTO{
 		ID:           user.ID,
@@ -56,35 +42,6 @@ func fromDomain(user domain.User) UserDTO {
 	}
 }
 
-func (m *MockRepo) UpdateUser(user domain.User) error {
-	_, ok := m.users[user.ID]
-	if !ok {
-		return domain.ErrUserNotFound
-	}
-
-	m.users[user.ID] = fromDomain(user)
-	return nil
-}
-
-func (m *MockRepo) RemoveUser(id uuid.UUID) error {
-	_, ok := m.users[id]
-	if !ok {
-		return domain.ErrUserNotFound
-	}
-
-	delete(m.users, id)
-	return nil
-}
-
-func (m *MockRepo) Users(filter string) ([]domain.User, error) {
-	var users []domain.User
-	for _, user := range m.users {
-		users = append(users, toDomain(user))
-	}
-
-	return users, nil
-}
-
 func toDomain(user UserDTO) domain.User {
 	return domain.User{
 		ID:           user.ID,
@@ -96,11 +53,5 @@ func toDomain(user UserDTO) domain.User {
 		Country:      user.Country,
 		CreatedAt:    user.CreatedAt,
 		UpdatedAt:    user.UpdatedAt,
-	}
-}
-
-func NewMockRepo() *MockRepo {
-	return &MockRepo{
-		users: make(map[domain.UserID]UserDTO),
 	}
 }

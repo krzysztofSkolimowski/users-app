@@ -20,9 +20,6 @@ func main() {
 func runServer() {
 	router := chi.NewRouter()
 
-	// todo - add a proper repository
-	//mockRepo := adapters.NewMockRepo()
-
 	repo := adapters.NewRepository(
 		adapters.RepoConfig{
 			Host:     os.Getenv("DB_HOST"),
@@ -31,7 +28,7 @@ func runServer() {
 			Password: os.Getenv("POSTGRES_PASSWORD"),
 		})
 
-	// todo - add a proper dependency injection framework google wire or something
+	// todo - add a proper dependency injection framework google wire or uber.fx
 	querySvc := service.NewUserQueryService(repo)
 	commandSvc := service.NewUserCommandService(repo)
 	httpServer := ports.NewHttpServer(querySvc, commandSvc)

@@ -23,6 +23,7 @@ paths:
             application/json:
               schema:
                 type: object
+
                 properties:
                   status:
                     type: string
@@ -38,6 +39,49 @@ paths:
     get:
       operationId: getUsers
       summary: Fetches a paginated list of users, allowing to filter by a matching field
+      parameters:
+        - name: first_name
+          in: query
+          schema:
+            type: string
+          example: "Alice"
+        - name: last_name
+          in: query
+          schema:
+            type: string
+          example: "Bob"
+        - name: nickname
+          in: query
+          schema:
+            type: string
+          example: "AB123"
+        - name: email
+          in: query
+          schema:
+            type: string
+            format: email
+          example: "alice@bob.com"
+        - name: country
+          in: query
+          schema:
+            type: string
+          example: "UK"
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            format: int32
+            minimum: 1
+            default: 10
+            description: Maximum number of records to return.
+        - name: offset
+          in: query
+          schema:
+            type: integer
+            format: int32
+            minimum: 0
+            default: 0
+            description: Number of records to skip for pagination.
       responses:
         '200':
           description: OK
@@ -175,24 +219,32 @@ components:
         - nickname
         - email
         - country
+        - created_at
+        - updated_at
 
     PostUser:
       type: object
       properties:
         first_name:
           type: string
+          example: "Alice"
         last_name:
           type: string
+          example: "Bob"
         nickname:
           type: string
+          example: "AB123"
         email:
           type: string
           format: email
+          example: "alice@bob.com"
         country:
           type: string
+          example: "UK"
         password:
           type: string
           format: password
+          example: "password"
       required:
         - first_name
         - last_name
@@ -206,15 +258,20 @@ components:
       properties:
         first_name:
           type: string
+          example: "Alice_modified"
         last_name:
           type: string
+          example: "Bob_modified"
         nickname:
           type: string
+          example: "AB123_modified"
         email:
           type: string
           format: email
+          example: "alice_modified@bob.com"
         country:
           type: string
+          example: "US"
 
     Error:
       type: object
@@ -225,7 +282,9 @@ components:
         code:
           type: integer
           format: int32
+          example: 400
         message:
           type: string
+          example: "Invalid input"
 
 

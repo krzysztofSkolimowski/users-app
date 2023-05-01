@@ -16,6 +16,10 @@ var (
 
 type UserID = uuid.UUID
 
+func ParseID(id string) (UserID, error) {
+	return uuid.Parse(id)
+}
+
 type User struct {
 	ID           UserID
 	FirstName    string
@@ -26,6 +30,46 @@ type User struct {
 	Country      string
 	CreatedAt    time.Time
 	UpdatedAt    time.Time
+}
+
+type Filter struct {
+	FirstName *string
+	LastName  *string
+	Nickname  *string
+	Email     *string
+	Country   *string
+}
+
+var MaxPaginationLimit = 100
+var DefaultPaginationLimit = 10
+
+type Pagination struct {
+	limit  int
+	Offset int
+}
+
+func (p Pagination) Limit() int {
+	return p.limit
+}
+
+func NewPagination(limit, offset int) Pagination {
+	ret := DefaultPaginationLimit
+	if limit != 0 {
+		ret = max(limit, MaxPaginationLimit)
+	}
+
+	return Pagination{
+		limit:  ret,
+		Offset: offset,
+	}
+}
+
+func max(a, b int) int {
+	if a < b {
+		return a
+	}
+
+	return b
 }
 
 func NewUser(
@@ -58,5 +102,5 @@ type Repository interface {
 	AddUser(user User) error
 	UpdateUser(user User) error
 	RemoveUser(id UserID) error
-	Users(filter string) ([]User, error)
+	Users(filter Filter, pagination Pagination) ([]User, error)
 }

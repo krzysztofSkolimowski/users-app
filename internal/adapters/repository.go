@@ -1,6 +1,7 @@
 package adapters
 
 import (
+	"fmt"
 	"log"
 	"users-app/domain"
 
@@ -76,9 +77,41 @@ func (r repository) RemoveUser(id domain.UserID) error {
 	return res.Delete()
 }
 
-func (r repository) Users(filter string) ([]domain.User, error) {
-	//TODO implement me
-	panic("implement me")
+func (r repository) Users(filter domain.Filter, pagination domain.Pagination) ([]domain.User, error) {
+	query := r.db.Collection("users").Find()
+	query = addFilters(filter, query)
+
+	// add pagination
+	query = query.Limit(pagination.Limit())
+	query = query.Offset(pagination.Offset)
+
+	// Execute the query and fetch the results
+	var ret []UserDTO
+	err := query.All(&ret)
+	if err != nil {
+		return nil, err
+	}
+
+	return toDomainUsers(ret), nil
+}
+
+func addFilters(filter domain.Filter, q db.Result) db.Result {
+	query := q
+	filterMap := map[string]*string{
+		"first_name": filter.FirstName,
+		"last_name":  filter.LastName,
+		"nickname":   filter.Nickname,
+		"email":      filter.Email,
+		"country":    filter.Country,
+	}
+
+	for field, value := range filterMap {
+		if value != nil {
+			query = query.And(db.Cond{fmt.Sprintf("%s", field): *value})
+		}
+	}
+
+	return query
 }
 
 func (r repository) insert(u domain.User) error {

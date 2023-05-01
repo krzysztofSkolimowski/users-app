@@ -6,7 +6,7 @@ import (
 )
 
 type UsersQueryService interface {
-	Users(ctx context.Context, filter string) ([]domain.User, error)
+	Users(context.Context, domain.Filter, domain.Pagination) ([]domain.User, error)
 }
 
 type UserQueryService struct {
@@ -17,7 +17,6 @@ func NewUserQueryService(repo domain.Repository) *UserQueryService {
 	return &UserQueryService{repo}
 }
 
-func (u UserQueryService) Users(ctx context.Context, filter string) ([]domain.User, error) {
-	return u.userRepository.Users(filter)
-
+func (u UserQueryService) Users(ctx context.Context, f domain.Filter, p domain.Pagination) ([]domain.User, error) {
+	return u.userRepository.Users(f, p)
 }

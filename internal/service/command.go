@@ -51,22 +51,25 @@ func (u UserCommandService) AddUser(ctx context.Context, toAdd AddUserCommand) (
 // since it's a security risk and it would probably require some additional checks
 type ModifyUserCommand struct {
 	ID        domain.UserID
-	FirstName string
-	LastName  string
-	Nickname  string
-	Email     string
-	Country   string
+	FirstName *string
+	LastName  *string
+	Nickname  *string
+	Email     *string
+	Country   *string
 }
 
 func (u UserCommandService) ModifyUser(ctx context.Context, toModify ModifyUserCommand) (domain.User, error) {
 	// todo - probably implement patch update
+	// todo - update only fields that:
+	// 1. are not nil
+	// 2. are different
 	user := domain.User{
 		ID:        toModify.ID,
-		FirstName: toModify.FirstName,
-		LastName:  toModify.LastName,
-		Nickname:  toModify.Nickname,
-		Email:     toModify.Email,
-		Country:   toModify.Country,
+		FirstName: *toModify.FirstName,
+		LastName:  *toModify.LastName,
+		Nickname:  *toModify.Nickname,
+		Email:     *toModify.Email,
+		Country:   *toModify.Country,
 	}
 
 	err := u.userRepository.UpdateUser(user)

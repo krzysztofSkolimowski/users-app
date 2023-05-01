@@ -6,7 +6,6 @@ import (
 	"users-app/gen/api"
 	"users-app/service"
 
-	types "github.com/deepmap/oapi-codegen/pkg/types"
 	"github.com/go-chi/render"
 	"github.com/labstack/gommon/log"
 )
@@ -16,6 +15,22 @@ type HttpServer struct {
 	commandService service.UsersCommandService
 }
 
+func (h HttpServer) GetUsers(w http.ResponseWriter, r *http.Request, params api.GetUsersParams) {
+	users, err := h.queryService.Users(r.Context(), filterFromParams(params), paginationFromParams(params))
+	if err != nil {
+		log.Error(err)
+		render.Respond(w, r, api.Error{Code: http.StatusInternalServerError, Message: "internal server error"})
+		return
+	}
+
+	render.Respond(w, r, api.Users{
+		Users: usersListFromDomain(users),
+	})
+
+	return
+
+}
+
 func NewHttpServer(queries service.UsersQueryService, commands service.UsersCommandService) HttpServer {
 
 	return HttpServer{queries, commands}
@@ -23,19 +38,6 @@ func NewHttpServer(queries service.UsersQueryService, commands service.UsersComm
 
 func (h HttpServer) GetHealth(w http.ResponseWriter, r *http.Request) {
 	render.Respond(w, r, "ok")
-	return
-}
-
-func (h HttpServer) GetUsers(w http.ResponseWriter, r *http.Request) {
-	render.Respond(w, r, api.Users{
-		Users: []api.User{
-			{Country: "United States", Email: "john.doe@example.com", FirstName: "John", Id: types.UUID{}, LastName: "Doe", Nickname: "JD", UpdatedAt: nil},
-			{Country: "France", Email: "jane.smith@example.com", FirstName: "Jane", Id: types.UUID{}, LastName: "Smith", Nickname: "JS", UpdatedAt: nil},
-			{Country: "Germany", Email: "michael.chang@example.com", FirstName: "Michael", Id: types.UUID{}, LastName: "Chang", Nickname: "MC", UpdatedAt: nil},
-			{Country: "United Kingdom", Email: "susan.jones@example.com", FirstName: "Susan", Id: types.UUID{}, LastName: "Jones", Nickname: "SJ", UpdatedAt: nil},
-			{Country: "Canada", Email: "james.harris@example.com", FirstName: "James", Id: types.UUID{}, LastName: "Harris", Nickname: "JH", UpdatedAt: nil},
-		},
-	})
 	return
 }
 
@@ -68,20 +70,15 @@ func (h HttpServer) PostUsers(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
-func toUserResponse(user domain.User) api.User {
-	return api.User{
-		Country:   user.Country,
-		Email:     types.Email(user.Email),
-		FirstName: user.FirstName,
-		Id:        user.ID,
-		LastName:  user.LastName,
-		Nickname:  user.Nickname,
-		CreatedAt: &user.CreatedAt,
-		UpdatedAt: &user.UpdatedAt,
-	}
-}
-
 func (h HttpServer) DeleteUsersUserID(w http.ResponseWriter, r *http.Request, userID string) {
+	id, err := domain.ParseID(userID)
+	if err != nil {
+		log.Error(err)
+		render.Respond(w, r, api.Error{Code: http.StatusBadRequest, Message: "invalid user id"})
+		return
+	}
+
+	h.commandService.DeleteUser(r.Context(), service.DeleteUserCommand{ID: id})
 	render.Respond(w, r, "ok")
 	return
 }
