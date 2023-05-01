@@ -11,7 +11,8 @@ services:
       - ./.go-cache:/go-cache
     working_dir: /internal
     ports:
-      - "127.0.0.1:$PORT:$PORT"
+      - "127.0.0.1:$PORT_HTTP:$PORT_HTTP"
+      - "127.0.0.1:$PORT_GRPC:$PORT_GRPC"
     env_file:
       - .env
     environment:

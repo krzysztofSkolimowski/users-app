@@ -1,4 +1,4 @@
-package ports
+package http
 
 import (
 	"users-app/domain"
@@ -8,19 +8,19 @@ import (
 )
 
 func filterFromParams(params api.GetUsersParams) domain.Filter {
-	ret := domain.Filter{
-		FirstName: params.FirstName,
-		LastName:  params.LastName,
-		Nickname:  params.Nickname,
-		Country:   params.Country,
-	}
-
+	mail := ""
 	if params.Email != nil {
-		mail := string(*params.Email)
-		ret.Email = &mail
+		mail = string(*params.Email)
 	}
 
-	return ret
+	return domain.NewFilter(
+		nilSafeString(params.FirstName),
+		nilSafeString(params.LastName),
+		nilSafeString(params.Nickname),
+		mail,
+		nilSafeString(params.Country),
+	)
+
 }
 
 func usersListFromDomain(users []domain.User) []api.User {
@@ -56,4 +56,11 @@ func paginationFromParams(params api.GetUsersParams) domain.Pagination {
 	}
 
 	return domain.NewPagination(limit, offset)
+}
+
+func nilSafeString(s *string) string {
+	if s != nil {
+		return *s
+	}
+	return ""
 }

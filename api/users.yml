@@ -142,7 +142,8 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/User'
+                $ref: '#/components/schemas/Ok'
+
         default:
           description: unexpected error
           content:
@@ -182,6 +183,15 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/User'
+
+    Ok:
+      type: object
+      properties:
+        status:
+          type: string
+          example: OK
+      required:
+        - status
 
     User:
       type: object

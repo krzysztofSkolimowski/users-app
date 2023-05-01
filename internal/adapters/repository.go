@@ -104,11 +104,11 @@ func (r repository) Users(filter domain.Filter, pagination domain.Pagination) ([
 func addFilters(filter domain.Filter, q db.Result) db.Result {
 	query := q
 	filterMap := map[string]*string{
-		"first_name": filter.FirstName,
-		"last_name":  filter.LastName,
-		"nickname":   filter.Nickname,
-		"email":      filter.Email,
-		"country":    filter.Country,
+		"first_name": filter.FirstName(),
+		"last_name":  filter.LastName(),
+		"nickname":   filter.Nickname(),
+		"email":      filter.Email(),
+		"country":    filter.Country(),
 	}
 
 	for field, value := range filterMap {

@@ -30,10 +30,22 @@ type AddUserCommand struct {
 }
 
 func (u UserCommandService) AddUser(ctx context.Context, toAdd AddUserCommand) (domain.User, error) {
-	user := domain.NewUser(toAdd.FirstName, toAdd.LastName, toAdd.Nickname, toAdd.Password, toAdd.Email, toAdd.Country)
+	user, err := domain.NewUser(toAdd.FirstName, toAdd.LastName, toAdd.Nickname, toAdd.Password, toAdd.Email, toAdd.Country)
+	if err != nil {
+		return domain.User{}, err
+	}
 
-	// todo - check if user exists
-	err := u.userRepository.AddUser(user)
+	users, err := u.userRepository.Users(domain.NewFilterEmail(toAdd.Email), domain.DefaultPagination)
+	if err != nil {
+		// todo - handle errors
+		return domain.User{}, err
+	}
+
+	if len(users) > 0 {
+		return domain.User{}, domain.ErrEmailExists
+	}
+
+	err = u.userRepository.AddUser(user)
 	if err != nil {
 		// todo - handle errors
 		return domain.User{}, err

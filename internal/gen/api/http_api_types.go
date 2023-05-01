@@ -19,6 +19,11 @@ type Error struct {
 	Message string `json:"message"`
 }
 
+// Ok defines model for Ok.
+type Ok struct {
+	Status string `json:"status"`
+}
+
 // PatchUser defines model for PatchUser.
 type PatchUser struct {
 	Country   *string              `json:"country,omitempty"`

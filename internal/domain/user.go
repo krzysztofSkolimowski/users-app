@@ -12,9 +12,15 @@ import (
 var (
 	ErrUserAlreadyExists = errors.New("user already exists")
 	ErrUserNotFound      = errors.New("user not found")
+	ErrEmailExists       = errors.New("email already exists")
+	ErrEmailRequired     = errors.New("email is required")
 )
 
 type UserID = uuid.UUID
+
+func NewUserID() UserID {
+	return uuid.New()
+}
 
 func ParseID(id string) (UserID, error) {
 	return uuid.Parse(id)
@@ -37,16 +43,48 @@ type Field string
 // Fields represent user fields that can be changes
 type Fields map[Field]string
 
+func (f Filter) FirstName() *string { return f.firstName }
+func (f Filter) LastName() *string  { return f.lastName }
+func (f Filter) Nickname() *string  { return f.nickname }
+func (f Filter) Email() *string     { return f.email }
+func (f Filter) Country() *string   { return f.country }
+
 type Filter struct {
-	FirstName *string
-	LastName  *string
-	Nickname  *string
-	Email     *string
-	Country   *string
+	firstName *string
+	lastName  *string
+	nickname  *string
+	email     *string
+	country   *string
+}
+
+func NewFilterEmail(email string) Filter {
+	return Filter{email: &email}
+}
+
+func NewFilter(firstName, lastName, nickname, email, country string) Filter {
+	filter := Filter{}
+	if firstName != "" {
+		filter.firstName = &firstName
+	}
+	if lastName != "" {
+		filter.lastName = &lastName
+	}
+	if nickname != "" {
+		filter.nickname = &nickname
+	}
+	if email != "" {
+		filter.email = &email
+	}
+	if country != "" {
+		filter.country = &country
+	}
+
+	return filter
 }
 
 var MaxPaginationLimit = 100
 var DefaultPaginationLimit = 10
+var DefaultPagination = Pagination{DefaultPaginationLimit, 0}
 
 type Pagination struct {
 	limit  int
@@ -80,18 +118,22 @@ func max(a, b int) int {
 func NewUser(
 	firstName string, lastName string, nickname string,
 	password string, email string, country string,
-) User {
+) (User, error) {
+	if email == "" {
+		return User{}, ErrEmailRequired
+	}
+
 	return User{
-		ID:           uuid.New(),
+		ID:           NewUserID(),
 		FirstName:    firstName,
 		LastName:     lastName,
 		Nickname:     nickname,
 		PasswordHash: hash(password),
 		Email:        email,
 		Country:      country,
-		CreatedAt:    time.Now(),
-		UpdatedAt:    time.Now(),
-	}
+		CreatedAt:    time.Now().UTC(),
+		UpdatedAt:    time.Now().UTC(),
+	}, nil
 }
 
 func hash(password string) string {

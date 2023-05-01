@@ -1,0 +1,85 @@
+syntax = "proto3";
+
+package users;
+
+option go_package = "github.com/krzysztofSkolimowski/users-app";
+
+import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
+
+service Users {
+  rpc HealthCheck (google.protobuf.Empty) returns (HealthCheckResponse) {}
+
+  rpc GetUsers (GetUsersRequest) returns (GetUsersResponse) {}
+
+  rpc CreateUser (CreateUserRequest) returns (User) {}
+
+  rpc ModifyUser (ModifyUserRequest) returns (ModifyUserResponse) {}
+
+  rpc DeleteUser (DeleteUserRequest) returns (google.protobuf.Empty) {}
+}
+
+message HealthCheckResponse {
+  string status = 1;
+}
+
+message ModifyUserResponse {
+  string status = 1;
+}
+
+
+message GetUsersRequest {
+  Filter filter = 1;
+  Pagination pagination = 2;
+}
+
+message Pagination {
+  int32 limit = 1;
+  int32 offset = 2;
+}
+
+message Filter {
+  string first_name = 1;
+  string last_name = 2;
+  string nickname = 3;
+  string email = 4;
+  string country = 5;
+}
+
+
+message GetUsersResponse {
+  repeated User users = 1;
+}
+
+message CreateUserRequest {
+  string first_name = 1;
+  string last_name = 2;
+  string nickname = 3;
+  string email = 4;
+  string country = 5;
+  string password = 6;
+}
+
+message ModifyUserRequest {
+  string id = 1;
+  string first_name = 2;
+  string last_name = 3;
+  string nickname = 4;
+  string email = 5;
+  string country = 6;
+}
+
+message DeleteUserRequest {
+  string id = 1;
+}
+
+message User {
+  string id = 1;
+  string first_name = 2;
+  string last_name = 3;
+  string nickname = 4;
+  string email = 5;
+  string country = 6;
+  google.protobuf.Timestamp created_at = 7;
+  google.protobuf.Timestamp updated_at = 8;
+}

@@ -30,7 +30,7 @@ The service must allow you to:
 The service must:
 
 - [x] Provide an HTTP
-- [ ] or gRPC API
+- [x] or gRPC API
 - [x] Use a sensible storage mechanism for the Users
 - [ ] Have the ability to notify other interested services of changes to User entities
 - [ ] Have meaningful logs
