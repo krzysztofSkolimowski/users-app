@@ -32,7 +32,7 @@ The service must:
 - [x] Provide an HTTP
 - [x] or gRPC API
 - [x] Use a sensible storage mechanism for the Users
-- [ ] Have the ability to notify other interested services of changes to User entities
+- [x] Have the ability to notify other interested services of changes to User entities
 - [ ] Have meaningful logs
 - [ ] Be well documented
 - [x] Have a health check

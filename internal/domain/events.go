@@ -2,9 +2,17 @@ package domain
 
 import "context"
 
+var (
+	UserAdded    = EventMsg("user-added")
+	UserModified = EventMsg("user-modified")
+	UserDeleted  = EventMsg("user-deleted")
+)
+
+type EventMsg string
+
 type Event struct {
 	Command
-	Msg string
+	Msg EventMsg
 }
 
 type Publisher interface {

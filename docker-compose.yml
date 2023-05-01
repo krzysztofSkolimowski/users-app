@@ -7,6 +7,7 @@ services:
     volumes:
       - ./internal:/internal
       - ./api:/api
+      - ./logs:/logs
       - ./.go/pkg:/go/pkg
       - ./.go-cache:/go-cache
     working_dir: /internal

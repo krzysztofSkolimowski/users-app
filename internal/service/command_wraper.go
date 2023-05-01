@@ -7,38 +7,44 @@ import (
 )
 
 type CommandEventsWrapper struct {
-	publisher domain.Publisher
-	wrapped   UsersCommandService
+	publisher   domain.Publisher
+	wrapped     UsersCommandService
+	eventLogger eventLogger
 }
 
-func NewCommandEventsWrapper(publisher domain.Publisher, wrapped UsersCommandService) UsersCommandService {
-	return CommandEventsWrapper{publisher: publisher, wrapped: wrapped}
+func NewCommandEventsWrapper(publisher domain.Publisher, wrapped UsersCommandService, logger eventLogger) UsersCommandService {
+	return CommandEventsWrapper{publisher, wrapped, logger}
+
+}
+
+type eventLogger interface {
+	LogEvent(domain.Event)
 }
 
 func (c AddUserCommand) EncodeEvent() (domain.Event, error) {
-	return domain.Event{Msg: "user-added", Command: c}, nil
+	return domain.Event{Msg: domain.UserAdded, Command: c}, nil
 }
 
 func (c CommandEventsWrapper) AddUser(ctx context.Context, command AddUserCommand) (domain.User, error) {
-	go c.publishEvent(ctx, command)
+	c.publishEvent(ctx, command)
 	return c.wrapped.AddUser(ctx, command)
 }
 
 func (c ModifyUserCommand) EncodeEvent() (domain.Event, error) {
-	return domain.Event{Msg: "user-modified", Command: c}, nil
+	return domain.Event{Msg: domain.UserModified, Command: c}, nil
 }
 
 func (c CommandEventsWrapper) ModifyUser(ctx context.Context, command ModifyUserCommand) error {
-	go c.publishEvent(ctx, command)
+	c.publishEvent(ctx, command)
 	return c.wrapped.ModifyUser(ctx, command)
 }
 
 func (c DeleteUserCommand) EncodeEvent() (domain.Event, error) {
-	return domain.Event{Msg: "user-deleted", Command: c}, nil
+	return domain.Event{Msg: domain.UserDeleted, Command: c}, nil
 }
 
 func (c CommandEventsWrapper) DeleteUser(ctx context.Context, command DeleteUserCommand) error {
-	go c.publishEvent(ctx, command)
+	c.publishEvent(ctx, command)
 	return c.wrapped.DeleteUser(ctx, command)
 }
 
@@ -52,11 +58,14 @@ func (c CommandEventsWrapper) publishEvent(ctx context.Context, command domain.C
 	if err != nil {
 		log.Printf("error publishing event: %v", err)
 	}
+	c.eventLogger.LogEvent(event)
 
-	err = c.publisher.PublishEvent(ctx, event)
-	if err != nil {
-		log.Printf("error publishing event: %v", err)
-	}
+	go func() {
+		err = c.publisher.PublishEvent(ctx, event)
+		if err != nil {
+			log.Printf("error publishing event: %v", err)
+		}
+	}()
 
 	return
 }

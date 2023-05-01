@@ -40,7 +40,8 @@ func main() {
 	})
 
 	commandSvcBase := service.NewUserCommandService(repo)
-	commandSvc := service.NewCommandEventsWrapper(redis, commandSvcBase)
+	eventsLogFilePath := getEnvString("EVENTS_LOG_FILE_PATH", "../logs/events.log")
+	commandSvc := service.NewCommandEventsWrapper(redis, commandSvcBase, adapters.NewEventLogger(eventsLogFilePath))
 
 	if getEnvBool("RUN_HTTP", true) {
 		go runHTTPServer(querySvc, commandSvc)
