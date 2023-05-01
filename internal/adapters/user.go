@@ -2,45 +2,96 @@ package adapters
 
 import (
 	"time"
-	"users-app/internal/domain"
+	"users-app/domain"
+
+	"github.com/google/uuid"
 )
 
 type UserDTO struct {
-	ID        string    `json:"id"`
-	FirstName string    `json:"first_name"`
-	LastName  string    `json:"last_name"`
-	Nickname  string    `json:"nickname"`
-	Password  string    `json:"password"`
-	Email     string    `json:"email"`
-	Country   string    `json:"country"`
-	CreatedAt time.Time `json:"created_at"`
-	UpdatedAt time.Time `json:"updated_at"`
+	ID           uuid.UUID `db:"id"`
+	FirstName    string    `db:"first_name"`
+	LastName     string    `db:"last_name"`
+	Nickname     string    `db:"nickname"`
+	PasswordHash string    `db:"password_hash"`
+	Email        string    `db:"email"`
+	Country      string    `db:"country"`
+	CreatedAt    time.Time `db:"created_at"`
+	UpdatedAt    time.Time `db:"updated_at"`
 }
 
-type UserRepo struct{}
-
-func NewRepo() UserRepo {
-	// init connection
-
-	return UserRepo{}
+type MockRepo struct {
+	users map[uuid.UUID]UserDTO
 }
 
-func (u UserRepo) AddUser(user domain.User) error {
-	//TODO implement me
-	panic("implement me")
+func (m *MockRepo) AddUser(user domain.User) (domain.UserID, error) {
+	_, ok := m.users[user.ID]
+	if ok {
+		return domain.UserID{}, domain.ErrUserAlreadyExists
+	}
+
+	m.users[user.ID] = fromDomain(user)
+	return user.ID, nil
 }
 
-func (u UserRepo) UpdateUser(user domain.User) error {
-	//TODO implement me
-	panic("implement me")
+func fromDomain(user domain.User) UserDTO {
+	return UserDTO{
+		ID:           user.ID,
+		FirstName:    user.FirstName,
+		LastName:     user.LastName,
+		Nickname:     user.Nickname,
+		PasswordHash: user.PasswordHash,
+		Email:        user.Email,
+		Country:      user.Country,
+		CreatedAt:    user.CreatedAt,
+		UpdatedAt:    user.UpdatedAt,
+	}
 }
 
-func (u UserRepo) RemoveUser(id string) error {
-	//TODO implement me
-	panic("implement me")
+func (m *MockRepo) UpdateUser(user domain.User) error {
+	_, ok := m.users[user.ID]
+	if !ok {
+		return domain.ErrUserNotFound
+	}
+
+	m.users[user.ID] = fromDomain(user)
+	return nil
 }
 
-func (u UserRepo) Users(filter string) ([]domain.User, error) {
-	//TODO implement me
-	panic("implement me")
+func (m *MockRepo) RemoveUser(id uuid.UUID) error {
+	_, ok := m.users[id]
+	if !ok {
+		return domain.ErrUserNotFound
+	}
+
+	delete(m.users, id)
+	return nil
+}
+
+func (m *MockRepo) Users(filter string) ([]domain.User, error) {
+	var users []domain.User
+	for _, user := range m.users {
+		users = append(users, toDomain(user))
+	}
+
+	return users, nil
+}
+
+func toDomain(user UserDTO) domain.User {
+	return domain.User{
+		ID:           user.ID,
+		FirstName:    user.FirstName,
+		LastName:     user.LastName,
+		Nickname:     user.Nickname,
+		PasswordHash: user.PasswordHash,
+		Email:        user.Email,
+		Country:      user.Country,
+		CreatedAt:    user.CreatedAt,
+		UpdatedAt:    user.UpdatedAt,
+	}
+}
+
+func NewMockRepo() *MockRepo {
+	return &MockRepo{
+		users: make(map[domain.UserID]UserDTO),
+	}
 }

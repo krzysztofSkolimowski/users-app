@@ -1,0 +1,236 @@
+2023-05-01 00:16:44.464 UTC [1] LOG:  starting PostgreSQL 15.2 (Debian 15.2-1.pgdg110+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 10.2.1-6) 10.2.1 20210110, 64-bit
+2023-05-01 00:16:44.464 UTC [1] LOG:  listening on IPv4 address "0.0.0.0", port 5432
+2023-05-01 00:16:44.464 UTC [1] LOG:  listening on IPv6 address "::", port 5432
+2023-05-01 00:16:44.468 UTC [1] LOG:  listening on Unix socket "/var/run/postgresql/.s.PGSQL.5432"
+2023-05-01 00:16:44.474 UTC [30] LOG:  database system was shut down at 2023-05-01 00:16:41 UTC
+2023-05-01 00:16:44.479 UTC [1] LOG:  database system is ready to accept connections
+2023-05-01 00:16:48.407 UTC [35] LOG:  statement: ;
+2023-05-01 00:16:48.408 UTC [35] LOG:  execute <unnamed>: SELECT
+	      
+	
+	      
+	        CURRENT_DATABASE() AS name
+2023-05-01 00:16:48.409 UTC [35] LOG:  statement: ;
+2023-05-01 00:16:51.158 UTC [35] ERROR:  relation "users" does not exist at character 193
+2023-05-01 00:16:51.158 UTC [35] STATEMENT:  SELECT
+	      
+	
+	      
+	        "pg_attribute"."attname" AS "pkey"
+	      
+	
+	      
+	        FROM "pg_index", "pg_class", "pg_attribute"
+	      
+	
+	      
+	
+	      
+	    
+	      WHERE (
+				pg_class.oid = '"users"'::regclass
+				AND indrelid = pg_class.oid
+				AND pg_attribute.attrelid = pg_class.oid
+				AND pg_attribute.attnum = ANY(pg_index.indkey)
+				AND indisprimary
+			)
+	    
+	  
+	
+	      
+	
+	      
+	    
+	      ORDER BY "pkey" ASC
+2023-05-01 00:17:12.968 UTC [1] LOG:  received fast shutdown request
+2023-05-01 00:17:12.969 UTC [1] LOG:  aborting any active transactions
+2023-05-01 00:17:12.971 UTC [1] LOG:  background worker "logical replication launcher" (PID 33) exited with exit code 1
+2023-05-01 00:17:12.973 UTC [28] LOG:  shutting down
+2023-05-01 00:17:12.975 UTC [28] LOG:  checkpoint starting: shutdown immediate
+2023-05-01 00:17:12.984 UTC [28] LOG:  checkpoint complete: wrote 3 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.003 s, sync=0.001 s, total=0.011 s; sync files=2, longest=0.001 s, average=0.001 s; distance=0 kB, estimate=0 kB
+2023-05-01 00:17:12.990 UTC [1] LOG:  database system is shut down
+2023-05-01 00:17:15.893 UTC [1] LOG:  starting PostgreSQL 15.2 (Debian 15.2-1.pgdg110+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 10.2.1-6) 10.2.1 20210110, 64-bit
+2023-05-01 00:17:15.893 UTC [1] LOG:  listening on IPv4 address "0.0.0.0", port 5432
+2023-05-01 00:17:15.893 UTC [1] LOG:  listening on IPv6 address "::", port 5432
+2023-05-01 00:17:15.896 UTC [1] LOG:  listening on Unix socket "/var/run/postgresql/.s.PGSQL.5432"
+2023-05-01 00:17:15.902 UTC [30] LOG:  database system was shut down at 2023-05-01 00:17:12 UTC
+2023-05-01 00:17:15.910 UTC [1] LOG:  database system is ready to accept connections
+2023-05-01 00:17:19.900 UTC [35] LOG:  statement: ;
+2023-05-01 00:17:19.900 UTC [35] LOG:  execute <unnamed>: SELECT
+	      
+	
+	      
+	        CURRENT_DATABASE() AS name
+2023-05-01 00:17:19.901 UTC [35] LOG:  statement: ;
+2023-05-01 00:17:25.497 UTC [35] ERROR:  relation "users" does not exist at character 193
+2023-05-01 00:17:25.497 UTC [35] STATEMENT:  SELECT
+	      
+	
+	      
+	        "pg_attribute"."attname" AS "pkey"
+	      
+	
+	      
+	        FROM "pg_index", "pg_class", "pg_attribute"
+	      
+	
+	      
+	
+	      
+	    
+	      WHERE (
+				pg_class.oid = '"users"'::regclass
+				AND indrelid = pg_class.oid
+				AND pg_attribute.attrelid = pg_class.oid
+				AND pg_attribute.attnum = ANY(pg_index.indkey)
+				AND indisprimary
+			)
+	    
+	  
+	
+	      
+	
+	      
+	    
+	      ORDER BY "pkey" ASC
+2023-05-01 00:18:33.592 UTC [1] LOG:  received fast shutdown request
+2023-05-01 00:18:33.593 UTC [1] LOG:  aborting any active transactions
+2023-05-01 00:18:33.595 UTC [1] LOG:  background worker "logical replication launcher" (PID 33) exited with exit code 1
+2023-05-01 00:18:33.597 UTC [28] LOG:  shutting down
+2023-05-01 00:18:33.599 UTC [28] LOG:  checkpoint starting: shutdown immediate
+2023-05-01 00:18:33.607 UTC [28] LOG:  checkpoint complete: wrote 3 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.003 s, sync=0.001 s, total=0.011 s; sync files=2, longest=0.001 s, average=0.001 s; distance=0 kB, estimate=0 kB
+2023-05-01 00:18:33.613 UTC [1] LOG:  database system is shut down
+2023-05-01 00:18:42.953 UTC [1] LOG:  starting PostgreSQL 15.2 (Debian 15.2-1.pgdg110+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 10.2.1-6) 10.2.1 20210110, 64-bit
+2023-05-01 00:18:42.953 UTC [1] LOG:  listening on IPv4 address "0.0.0.0", port 5432
+2023-05-01 00:18:42.953 UTC [1] LOG:  listening on IPv6 address "::", port 5432
+2023-05-01 00:18:42.957 UTC [1] LOG:  listening on Unix socket "/var/run/postgresql/.s.PGSQL.5432"
+2023-05-01 00:18:42.964 UTC [30] LOG:  database system was shut down at 2023-05-01 00:18:33 UTC
+2023-05-01 00:18:42.971 UTC [1] LOG:  database system is ready to accept connections
+2023-05-01 00:18:47.195 UTC [35] LOG:  statement: ;
+2023-05-01 00:18:47.196 UTC [35] LOG:  execute <unnamed>: SELECT
+	      
+	
+	      
+	        CURRENT_DATABASE() AS name
+2023-05-01 00:18:47.196 UTC [35] LOG:  statement: ;
+2023-05-01 00:18:47.374 UTC [35] ERROR:  relation "users" does not exist at character 193
+2023-05-01 00:18:47.374 UTC [35] STATEMENT:  SELECT
+	      
+	
+	      
+	        "pg_attribute"."attname" AS "pkey"
+	      
+	
+	      
+	        FROM "pg_index", "pg_class", "pg_attribute"
+	      
+	
+	      
+	
+	      
+	    
+	      WHERE (
+				pg_class.oid = '"users"'::regclass
+				AND indrelid = pg_class.oid
+				AND pg_attribute.attrelid = pg_class.oid
+				AND pg_attribute.attnum = ANY(pg_index.indkey)
+				AND indisprimary
+			)
+	    
+	  
+	
+	      
+	
+	      
+	    
+	      ORDER BY "pkey" ASC
+2023-05-01 00:19:50.027 UTC [1] LOG:  received fast shutdown request
+2023-05-01 00:19:50.029 UTC [1] LOG:  aborting any active transactions
+2023-05-01 00:19:50.030 UTC [1] LOG:  background worker "logical replication launcher" (PID 33) exited with exit code 1
+2023-05-01 00:19:50.031 UTC [28] LOG:  shutting down
+2023-05-01 00:19:50.032 UTC [28] LOG:  checkpoint starting: shutdown immediate
+2023-05-01 00:19:50.041 UTC [28] LOG:  checkpoint complete: wrote 3 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.004 s, sync=0.001 s, total=0.011 s; sync files=2, longest=0.001 s, average=0.001 s; distance=0 kB, estimate=0 kB
+2023-05-01 00:19:50.047 UTC [1] LOG:  database system is shut down
+2023-05-01 00:20:04.090 UTC [1] LOG:  starting PostgreSQL 15.2 (Debian 15.2-1.pgdg110+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 10.2.1-6) 10.2.1 20210110, 64-bit
+2023-05-01 00:20:04.091 UTC [1] LOG:  listening on IPv4 address "0.0.0.0", port 5432
+2023-05-01 00:20:04.091 UTC [1] LOG:  listening on IPv6 address "::", port 5432
+2023-05-01 00:20:04.094 UTC [1] LOG:  listening on Unix socket "/var/run/postgresql/.s.PGSQL.5432"
+2023-05-01 00:20:04.109 UTC [30] LOG:  database system was shut down at 2023-05-01 00:19:50 UTC
+2023-05-01 00:20:04.115 UTC [1] LOG:  database system is ready to accept connections
+2023-05-01 00:21:47.631 UTC [355] LOG:  statement: CREATE TABLE IF NOT EXISTS users (
+	    id UUID PRIMARY KEY,
+	    first_name VARCHAR(100) NOT NULL,
+	    last_name VARCHAR(100) NOT NULL,
+	    nickname VARCHAR(100) NOT NULL,
+	    password_hash VARCHAR(255) NOT NULL,
+	    email VARCHAR(100) UNIQUE NOT NULL,
+	    country VARCHAR(100) NOT NULL,
+	    created_at TIMESTAMP NOT NULL,
+	    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+	);
+2023-05-01 00:22:02.344 UTC [357] LOG:  statement: ;
+2023-05-01 00:22:02.345 UTC [357] LOG:  execute <unnamed>: SELECT
+	      
+	
+	      
+	        CURRENT_DATABASE() AS name
+2023-05-01 00:22:02.345 UTC [357] LOG:  statement: ;
+2023-05-01 00:22:05.124 UTC [357] LOG:  execute <unnamed>: SELECT
+	      
+	
+	      
+	        "pg_attribute"."attname" AS "pkey"
+	      
+	
+	      
+	        FROM "pg_index", "pg_class", "pg_attribute"
+	      
+	
+	      
+	
+	      
+	    
+	      WHERE (
+				pg_class.oid = '"users"'::regclass
+				AND indrelid = pg_class.oid
+				AND pg_attribute.attrelid = pg_class.oid
+				AND pg_attribute.attnum = ANY(pg_index.indkey)
+				AND indisprimary
+			)
+	    
+	  
+	
+	      
+	
+	      
+	    
+	      ORDER BY "pkey" ASC
+2023-05-01 00:22:05.125 UTC [357] LOG:  execute <unnamed>: INSERT INTO "users"
+	      ("country", "created_at", "email", "first_name", "id", "last_name", "nickname", "password_hash", "updated_at")
+	    VALUES
+	    
+	      ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+	    
+	    
+	      RETURNING "id"
+2023-05-01 00:22:05.125 UTC [357] DETAIL:  parameters: $1 = 'Poland', $2 = '2023-05-01 00:22:05.122013', $3 = 'krzysztof@skolimowski.com', $4 = 'Krzysztof', $5 = 'ed81fbc7-187c-40b1-8e7c-d2d9b9c35568', $6 = 'Skolimowski', $7 = 'skolik420', $8 = '190aec7389a3b0b5b6c67ac2756cb7b7bc6e5d936ae83d34f55a150a67a13003', $9 = '2023-05-01 00:22:05.122013'
+2023-05-01 00:22:08.150 UTC [359] LOG:  statement: SELECT version();
+2023-05-01 00:22:08.151 UTC [359] LOG:  statement: SELECT oid, typname FROM pg_type WHERE typname='geometry' OR typname='geography';
+2023-05-01 00:22:08.153 UTC [359] LOG:  statement: SELECT nspname FROM pg_catalog.pg_namespace;
+2023-05-01 00:22:08.156 UTC [359] LOG:  statement: SELECT pg_catalog.pg_get_userbyid(p.proowner) as owner,p.oid AS oid,pg_get_function_identity_arguments(p.oid)AS args,n.nspname AS function_schema,p.proname AS function_name,CASE WHEN p.prokind = 'a'THEN'aggregate'WHEN p.prokind='w'THEN'window'WHEN p.prokind='p'THEN'procedure'ELSE'function'END AS function_type FROM pg_catalog.pg_proc p LEFT JOIN pg_catalog.pg_namespace n ON n.oid=p.pronamespace WHERE n.nspname<>'pg_catalog'AND n.nspname<>'information_schema';
+2023-05-01 00:22:08.159 UTC [359] LOG:  statement: SELECT table_name, table_schema, table_type FROM information_schema.tables;
+2023-05-01 00:22:08.162 UTC [359] LOG:  statement: SELECT c.relname AS table_name, n.nspname AS table_schema, 'MATERIALIZED VIEW' as table_type FROM pg_catalog.pg_class c JOIN pg_namespace n ON n.oid = c.relnamespace WHERE c.relkind = 'm';
+2023-05-01 00:22:08.164 UTC [359] LOG:  statement: SELECT p.oid AS oid, p.relname AS table_name, n.nspname as table_schema FROM pg_class AS p JOIN pg_namespace AS n ON p.relnamespace=n.oid WHERE p.relkind='r';
+2023-05-01 00:22:08.170 UTC [359] LOG:  statement: SELECT pg_catalog.pg_get_userbyid(relowner)AS owner,relname AS name,reltuples::int8 AS estimated_row FROM pg_class c JOIN pg_catalog.pg_namespace n ON n.oid=c.relnamespace WHERE nspname='public'AND relkind IN('r','v','m');
+2023-05-01 00:22:08.172 UTC [359] LOG:  statement: SELECT relname as name,obj_description(relid, 'pg_class') as comment,pg_total_relation_size(relid)As total_size,pg_table_size(relid)as data_size,pg_indexes_size(relid)as index_size FROM pg_catalog.pg_statio_user_tables where schemaname='public' UNION SELECT p.proname as name,obj_description(p.oid, 'pg_proc') as comment, NULL as total_size, NULL as data_size, NULL as index_size FROM pg_catalog.pg_proc p LEFT JOIN pg_catalog.pg_namespace n ON n.oid=p.pronamespace WHERE n.nspname='public' UNION SELECT p.relname AS name,obj_description(p.oid,'pg_class')AS COMMENT,NULL AS total_size,NULL AS data_size,NULL AS index_size FROM pg_catalog.pg_class p LEFT JOIN pg_catalog.pg_namespace n ON n.oid=p.relnamespace WHERE n.nspname='public' AND p.relkind='v';
+2023-05-01 00:22:14.677 UTC [359] LOG:  statement: SELECT 1;
+2023-05-01 00:22:44.678 UTC [359] LOG:  statement: SELECT 1;
+2023-05-01 00:23:14.678 UTC [359] LOG:  statement: SELECT 1;
+2023-05-01 00:23:35.095 UTC [1] LOG:  received fast shutdown request
+2023-05-01 00:23:35.097 UTC [1] LOG:  aborting any active transactions
+2023-05-01 00:23:35.099 UTC [1] LOG:  background worker "logical replication launcher" (PID 33) exited with exit code 1
+2023-05-01 00:23:35.099 UTC [359] FATAL:  terminating connection due to administrator command
+2023-05-01 00:23:35.104 UTC [28] LOG:  shutting down
+2023-05-01 00:23:35.105 UTC [28] LOG:  checkpoint starting: shutdown immediate
+2023-05-01 00:23:35.122 UTC [28] LOG:  checkpoint complete: wrote 39 buffers (0.2%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.003 s, sync=0.010 s, total=0.019 s; sync files=30, longest=0.005 s, average=0.001 s; distance=132 kB, estimate=132 kB
+2023-05-01 00:23:35.129 UTC [1] LOG:  database system is shut down

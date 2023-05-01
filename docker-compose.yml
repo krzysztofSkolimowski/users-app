@@ -1,5 +1,5 @@
 version: '3.8'
-name: 'users-app'
+name: 'users'
 services:
   app:
     build:
@@ -18,14 +18,20 @@ services:
       SERVER_TO_RUN: http
       GOCACHE: /go-cache
     depends_on:
-      - mysql
+      - db
 
-  mysql:
-    image: mariadb:10
-    env_file:
-      - .env
-    volumes:
-      - ./sql/schema.sql:/docker-entrypoint-initdb.d/schema.sql
-    ports:
-      - "127.0.0.1:3306:3306"
+  db:
+    image: postgres:15.2
     restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-password}
+      POSTGRES_DB: ${POSTGRES_DB:-users}
+    ports:
+      - "5432:5432"
+    volumes:
+      - db-data:/var/lib/postgresql/data
+      - ./sql/schema.sql:/docker-entrypoint-initdb.d/schema.sql
+
+volumes:
+  db-data:
