@@ -12,13 +12,22 @@ type repository struct {
 	db db.Session
 }
 
-func NewRepository() domain.Repository {
+type RepoConfig struct {
+	Host     string
+	Database string
+	User     string
+	Password string
+}
+
+func NewRepository(
+	repositoryConfig RepoConfig,
+) repository {
 	// todo - load from .env
 	settings := postgresql.ConnectionURL{
-		Host:     "db",
-		Database: "users",
-		User:     "postgres",
-		Password: "password",
+		Host:     repositoryConfig.Host,
+		Database: repositoryConfig.Database,
+		User:     repositoryConfig.User,
+		Password: repositoryConfig.Password,
 	}
 
 	sess, err := postgresql.Open(settings)
@@ -35,14 +44,31 @@ func NewRepository() domain.Repository {
 }
 
 func (r repository) AddUser(user domain.User) error {
-	_, err := r.db.Collection("users").Insert(fromDomain(user))
-	return err
+
+	// todo - handle unique user id constraint
+	exists, err := r.db.Collection("users").Find(db.Cond{"id": user.ID}).Exists()
+	if err != nil {
+		return err
+	}
+
+	if exists {
+		return domain.ErrUserAlreadyExists
+	}
+
+	return r.insert(user)
 }
 
 func (r repository) UpdateUser(user domain.User) error {
-	res := r.db.Collection("users").Find(db.Cond{"id": user.ID})
+	exists, err := r.db.Collection("users").Find(db.Cond{"id": user.ID}).Exists()
+	if err != nil {
+		return err
+	}
 
-	return res.Update(fromDomain(user))
+	if !exists {
+		return domain.ErrUserNotFound
+	}
+
+	return r.db.Collection("users").Find(db.Cond{"id": user.ID}).Update(fromDomain(user))
 }
 
 func (r repository) RemoveUser(id domain.UserID) error {
@@ -53,4 +79,21 @@ func (r repository) RemoveUser(id domain.UserID) error {
 func (r repository) Users(filter string) ([]domain.User, error) {
 	//TODO implement me
 	panic("implement me")
+}
+
+func (r repository) insert(u domain.User) error {
+	_, err := r.db.Collection("users").Insert(fromDomain(u))
+	return err
+}
+
+// implemented just for integration tests
+func (r repository) flush() {
+	r.db.Collection("users").Truncate()
+}
+
+// implemented just for integration tests
+func (r repository) allUsers() ([]domain.User, error) {
+	var users []UserDTO
+	err := r.db.Collection("users").Find().All(&users)
+	return toDomainUsers(users), err
 }

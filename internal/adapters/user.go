@@ -19,6 +19,15 @@ type UserDTO struct {
 	UpdatedAt    time.Time `db:"updated_at"`
 }
 
+func toDomainUsers(users []UserDTO) []domain.User {
+	result := make([]domain.User, len(users))
+	for i, user := range users {
+		result[i] = toDomain(user)
+	}
+
+	return result
+}
+
 type MockRepo struct {
 	users map[uuid.UUID]UserDTO
 }

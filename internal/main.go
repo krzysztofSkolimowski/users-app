@@ -2,6 +2,7 @@ package main
 
 import (
 	"net/http"
+	"os"
 	"users-app/adapters"
 	"users-app/gen/api"
 	"users-app/ports"
@@ -22,7 +23,13 @@ func runServer() {
 	// todo - add a proper repository
 	//mockRepo := adapters.NewMockRepo()
 
-	repo := adapters.NewRepository()
+	repo := adapters.NewRepository(
+		adapters.RepoConfig{
+			Host:     os.Getenv("DB_HOST"),
+			Database: os.Getenv("POSTGRES_DB"),
+			User:     os.Getenv("POSTGRES_USER"),
+			Password: os.Getenv("POSTGRES_PASSWORD"),
+		})
 
 	// todo - add a proper dependency injection framework google wire or something
 	querySvc := service.NewUserQueryService(repo)
