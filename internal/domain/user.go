@@ -32,6 +32,11 @@ type User struct {
 	UpdatedAt    time.Time
 }
 
+type Field string
+
+// Fields represent user fields that can be changes
+type Fields map[Field]string
+
 type Filter struct {
 	FirstName *string
 	LastName  *string
@@ -98,8 +103,8 @@ func hash(password string) string {
 }
 
 type Repository interface {
-	AddUser(user User) error
-	UpdateUser(user User) error
-	RemoveUser(id UserID) error
-	Users(filter Filter, pagination Pagination) ([]User, error)
+	AddUser(User) error
+	ModifyUser(UserID, Fields) error
+	RemoveUser(UserID) error
+	Users(Filter, Pagination) ([]User, error)
 }

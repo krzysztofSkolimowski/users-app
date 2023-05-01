@@ -7,7 +7,7 @@ import (
 
 type UsersCommandService interface {
 	AddUser(context.Context, AddUserCommand) (domain.User, error)
-	ModifyUser(context.Context, ModifyUserCommand) (domain.User, error)
+	ModifyUser(context.Context, ModifyUserCommand) error
 	DeleteUser(context.Context, DeleteUserCommand) error
 }
 
@@ -16,10 +16,6 @@ type UserCommandService struct {
 }
 
 func NewUserCommandService(repo domain.Repository) *UserCommandService {
-
-	// todo - implement normal repo
-	// mock repo
-
 	return &UserCommandService{repo}
 }
 
@@ -58,26 +54,34 @@ type ModifyUserCommand struct {
 	Country   *string
 }
 
-func (u UserCommandService) ModifyUser(ctx context.Context, toModify ModifyUserCommand) (domain.User, error) {
-	// todo - probably implement patch update
-	// todo - update only fields that:
-	// 1. are not nil
-	// 2. are different
-	user := domain.User{
-		ID:        toModify.ID,
-		FirstName: *toModify.FirstName,
-		LastName:  *toModify.LastName,
-		Nickname:  *toModify.Nickname,
-		Email:     *toModify.Email,
-		Country:   *toModify.Country,
+func (c ModifyUserCommand) fieldsToUpdate() domain.Fields {
+	ret := make(domain.Fields)
+	if c.FirstName != nil {
+		ret["first_name"] = *c.FirstName
+	}
+	if c.LastName != nil {
+		ret["last_name"] = *c.LastName
+	}
+	if c.Nickname != nil {
+		ret["nickname"] = *c.Nickname
+	}
+	if c.Email != nil {
+		ret["email"] = *c.Email
+	}
+	if c.Country != nil {
+		ret["country"] = *c.Country
 	}
 
-	err := u.userRepository.UpdateUser(user)
+	return ret
+}
+
+func (u UserCommandService) ModifyUser(ctx context.Context, toModify ModifyUserCommand) error {
+	err := u.userRepository.ModifyUser(toModify.ID, toModify.fieldsToUpdate())
 	if err != nil {
-		return domain.User{}, err
+		return err
 	}
 
-	return user, nil
+	return nil
 }
 
 // DeleteUserCommand is used to delete a user given the user exists

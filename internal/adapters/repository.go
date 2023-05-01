@@ -45,13 +45,10 @@ func NewRepository(
 }
 
 func (r repository) AddUser(user domain.User) error {
-
-	// todo - handle unique user id constraint
 	exists, err := r.db.Collection("users").Find(db.Cond{"id": user.ID}).Exists()
 	if err != nil {
 		return err
 	}
-
 	if exists {
 		return domain.ErrUserAlreadyExists
 	}
@@ -59,17 +56,26 @@ func (r repository) AddUser(user domain.User) error {
 	return r.insert(user)
 }
 
-func (r repository) UpdateUser(user domain.User) error {
-	exists, err := r.db.Collection("users").Find(db.Cond{"id": user.ID}).Exists()
+func (r repository) ModifyUser(id domain.UserID, fields domain.Fields) error {
+	res := r.db.Collection("users").Find(db.Cond{"id": id})
+	exists, err := res.Exists()
 	if err != nil {
 		return err
 	}
-
 	if !exists {
 		return domain.ErrUserNotFound
 	}
 
-	return r.db.Collection("users").Find(db.Cond{"id": user.ID}).Update(fromDomain(user))
+	if len(fields) > 0 {
+		err := res.Update(fields)
+		if err != nil {
+			return fmt.Errorf("failed to update user: %w", err)
+		}
+
+		return nil
+	}
+
+	return nil
 }
 
 func (r repository) RemoveUser(id domain.UserID) error {

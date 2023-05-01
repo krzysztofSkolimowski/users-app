@@ -207,3 +207,117 @@ func Test_repository_RemoveUser(t *testing.T) {
 		})
 	}
 }
+
+func Test_repository_ModifyUser(t *testing.T) {
+	uuid1 := uuid.MustParse("5f5d5ef5-5eb5-5cb5-b5d5-5f5d5ef5eb5c")
+	uuid2 := uuid.MustParse("7a13e2ff-2c47-4f16-9c35-8e24abddc0ea")
+	user1 := domain.User{
+		ID: uuid1, FirstName: "John", LastName: "Doe", Nickname: "johndoe", Email: "john@doe.com", Country: "US",
+	}
+
+	user1NameModified := user1
+	user1NameModified.FirstName = "Alex"
+
+	user1SurnameModified := user1
+	user1SurnameModified.LastName = "Smith"
+
+	user1NicknameModified := user1
+	user1NicknameModified.Nickname = "alex"
+
+	user1EmailModified := user1
+	user1EmailModified.Email = "new@email.com"
+
+	user1CountryModified := user1
+	user1CountryModified.Country = "UK"
+
+	user2 := domain.User{
+		ID: uuid2, FirstName: "Jane", LastName: "Doe", Nickname: "janedoe", Email: "jane@doe.com", Country: "US",
+	}
+
+	tests := []struct {
+		name   string
+		id     domain.UserID
+		fields domain.Fields
+
+		existingUsers []domain.User
+
+		expectedErr   error
+		expectedUsers []domain.User
+	}{
+		{
+			name:          "user_does_not_exist",
+			id:            uuid1,
+			fields:        domain.Fields{"first_name": "Alex"},
+			expectedErr:   domain.ErrUserNotFound,
+			expectedUsers: []domain.User{},
+		},
+		{
+			name: "user_exists_first_name_gets_modified",
+			id:   uuid1,
+			fields: domain.Fields{
+				"first_name": "Alex",
+			},
+			existingUsers: []domain.User{user1},
+			expectedUsers: []domain.User{user1NameModified},
+		},
+		{
+			name: "user_exists_last_name_gets_modified",
+			id:   uuid1,
+			fields: domain.Fields{
+				"last_name": "Smith",
+			},
+			existingUsers: []domain.User{user1, user2},
+			expectedUsers: []domain.User{
+				user1SurnameModified,
+				user2,
+			},
+		},
+		{
+			name: "user_exists_nickname_gets_modified",
+			id:   uuid1,
+			fields: domain.Fields{
+				"nickname": "alex",
+			},
+			existingUsers: []domain.User{user1, user2},
+			expectedUsers: []domain.User{
+				user1NicknameModified,
+				user2,
+			},
+		},
+		{
+			name: "user_exists_email_gets_modified",
+			id:   uuid1,
+			fields: domain.Fields{
+				"email": "new@email.com",
+			},
+			existingUsers: []domain.User{user1, user2},
+			expectedUsers: []domain.User{
+				user1EmailModified,
+				user2,
+			},
+		},
+		{
+			name: "user_exists_country_gets_modified",
+			id:   uuid1,
+			fields: domain.Fields{
+				"country": "UK",
+			},
+			existingUsers: []domain.User{user1, user2},
+			expectedUsers: []domain.User{
+				user1CountryModified,
+				user2,
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			repo := setupRepo(tt.existingUsers)
+
+			err := repo.ModifyUser(tt.id, tt.fields)
+			assert.Equal(t, tt.expectedErr, err)
+
+			usersInRepo, _ := repo.allUsers()
+			assert.ElementsMatch(t, tt.expectedUsers, usersInRepo)
+		})
+	}
+}

@@ -19,15 +19,17 @@ A user must be stored using the following schema:
 "updated_at": "2019-10-12T07:20:50.52Z"
 }
 
-
 The service must allow you to:
+
 - [x] Add a new User
-- [ ] Modify an existing User
+- [x] Modify an existing User
 - [x] Remove a User
-- [x] Return a paginated list of Users, allowing for filtering by certain criteria (e.g. all Users with the country "UK")
+- [x] Return a paginated list of Users, allowing for filtering by certain criteria (e.g. all Users with the country "
+  UK")
 
 The service must:
-- [x] Provide an HTTP 
+
+- [x] Provide an HTTP
 - [ ] or gRPC API
 - [x] Use a sensible storage mechanism for the Users
 - [ ] Have the ability to notify other interested services of changes to User entities
@@ -36,13 +38,15 @@ The service must:
 - [x] Have a health check
 
 The service must NOT:
+
 - [x] Provide login or authentication functionality
 
 It is up to you what technologies and patterns you use to implement these features, but you will be
 assessed on these choices and we expect you to be confident in explaining your choice. We encourage the
-use of local alternatives or stubs: 
+use of local alternatives or stubs:
+
 - [x] (for instance a database containerised and linked to your service through
-docker-compose).
+  docker-compose).
 
 ## Notes
 
@@ -51,6 +55,7 @@ code. If your solution is becoming overly complex, simply explain what would hav
 and prepare for follow-up questions in the technical interview.
 
 Please also provide a README.md that contains:
+
 - [ ] Instructions to start the application on localhost (dockerised applications are preferred)
 - [ ] An explanation of the choices taken and assumptions made during development
 - [ ] Possible extensions or improvements to the service (focusing on scalability and deployment to
@@ -61,24 +66,30 @@ We expect to be able to run the tests, build the application and run it locally.
 ## WHAT YOU WILL BE SCORED ON
 
 ### Coding Skills:
+
 - Is your code respecting fields and access modifiers?
 - Is your code respecting single responsibility principles?
 
 ### Application Structure:
+
 - Have you applied the correct division of the layers?
 - Do you have the correct dependencies between layers?
 
 ### Framework Usage:
+
 - Have you applied the correct usage of framework features?
 
 ### REST endpoints:
+
 - Is your URL structure correct?
 - Have you used HTTP verbs?
 
 ### Asynchronous communication:
+
 - Is it asynchronous?
 
 ### Testing:
+
 - Are you happy with your test coverage?
 
 
