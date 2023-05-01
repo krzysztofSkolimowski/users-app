@@ -17,6 +17,7 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/go-chi/httplog"
+	"go.uber.org/zap"
 	"google.golang.org/grpc"
 )
 
@@ -41,7 +42,14 @@ func main() {
 
 	commandSvcBase := service.NewUserCommandService(repo)
 	eventsLogFilePath := getEnvString("EVENTS_LOG_FILE_PATH", "../logs/events.log")
-	commandSvc := service.NewCommandEventsWrapper(redis, commandSvcBase, adapters.NewEventLogger(eventsLogFilePath))
+
+	logger, err := zap.NewProduction()
+	if err != nil {
+		log.Fatalf("failed to create logger: %v", err)
+	}
+	commandSvcLogging := service.NewCommandLoggingWrapper(logger, commandSvcBase)
+
+	commandSvc := service.NewCommandEventsWrapper(redis, commandSvcLogging, adapters.NewEventLogger(eventsLogFilePath))
 
 	if getEnvBool("RUN_HTTP", true) {
 		go runHTTPServer(querySvc, commandSvc)

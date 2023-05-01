@@ -63,7 +63,6 @@ func Test_repository_AddUser(t *testing.T) {
 }
 
 func Test_repository_Users(t *testing.T) {
-	stringPtr := func(s string) *string { return &s }
 	// fixtures
 	uuid1 := uuid.MustParse("5f5d5ef5-5eb5-5cb5-b5d5-5f5d5ef5eb5c")
 	uuid2 := uuid.MustParse("7a13e2ff-2c47-4f16-9c35-8e24abddc0ea")
@@ -106,7 +105,7 @@ func Test_repository_Users(t *testing.T) {
 		{
 			name:          "first_name_filter_returns_existing_user",
 			existingUsers: []domain.User{user1, user2},
-			filter:        domain.Filter{FirstName: stringPtr("John")},
+			filter:        domain.NewFilter("John", "", "", "", ""),
 			expected:      []domain.User{user1},
 		},
 		{
@@ -114,7 +113,7 @@ func Test_repository_Users(t *testing.T) {
 			existingUsers: []domain.User{
 				user1, user2, user3,
 			},
-			filter:   domain.Filter{LastName: stringPtr("Doe")},
+			filter:   domain.NewFilter("", "Doe", "", "", ""),
 			expected: []domain.User{user1, user2},
 		},
 		{
@@ -122,7 +121,7 @@ func Test_repository_Users(t *testing.T) {
 			existingUsers: []domain.User{
 				user1, user2,
 			},
-			filter:   domain.Filter{Nickname: stringPtr("johndoe")},
+			filter:   domain.NewFilter("", "", "johndoe", "", ""),
 			expected: []domain.User{user1},
 		},
 		{
@@ -130,7 +129,7 @@ func Test_repository_Users(t *testing.T) {
 			existingUsers: []domain.User{
 				user1, user2,
 			},
-			filter:   domain.Filter{Email: stringPtr("john.doe@email.com")},
+			filter:   domain.NewFilter("", "", "", user1.Email, ""),
 			expected: []domain.User{user1},
 		},
 		{
@@ -138,7 +137,7 @@ func Test_repository_Users(t *testing.T) {
 			existingUsers: []domain.User{
 				user1, user2,
 			},
-			filter:   domain.Filter{Country: stringPtr("US")},
+			filter:   domain.NewFilter("", "", "", "", "US"),
 			expected: []domain.User{user1, user2},
 		},
 		{
@@ -146,10 +145,7 @@ func Test_repository_Users(t *testing.T) {
 			existingUsers: []domain.User{
 				user1, user2, user3,
 			},
-			filter: domain.Filter{
-				FirstName: stringPtr("John"),
-				Country:   stringPtr("UK"),
-			},
+			filter:   domain.NewFilter("John", "Stones", "", "", ""),
 			expected: []domain.User{user3},
 		},
 	}

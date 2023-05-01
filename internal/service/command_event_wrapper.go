@@ -14,7 +14,6 @@ type CommandEventsWrapper struct {
 
 func NewCommandEventsWrapper(publisher domain.Publisher, wrapped UsersCommandService, logger eventLogger) UsersCommandService {
 	return CommandEventsWrapper{publisher, wrapped, logger}
-
 }
 
 type eventLogger interface {

@@ -8,7 +8,7 @@ up:
 	docker compose up
 
 test:
-	gotestsum -f testname ./internal/...
+	cd internal && gotestsum -f testname ./...
 
 evans:
-	evans  api/users.proto
+	evans api/users.proto
