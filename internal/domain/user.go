@@ -97,7 +97,6 @@ func hash(password string) string {
 	return hex.EncodeToString(hashed[:])
 }
 
-// todo - add context
 type Repository interface {
 	AddUser(user User) error
 	UpdateUser(user User) error

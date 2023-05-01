@@ -1,4 +1,4 @@
-# H1 TASK
+# TASK
 
 To write a small microservice to manage access to Users, the service should be implemented in Go - as
 this is primary language that we use at FACEIT for backend development.
@@ -21,25 +21,27 @@ A user must be stored using the following schema:
 
 
 The service must allow you to:
-- Add a new User
-- Modify an existing User
-- Remove a User
-- Return a paginated list of Users, allowing for filtering by certain criteria (e.g. all Users with the country "UK")
+- [x] Add a new User
+- [ ] Modify an existing User
+- [x] Remove a User
+- [x] Return a paginated list of Users, allowing for filtering by certain criteria (e.g. all Users with the country "UK")
 
 The service must:
-- Provide an HTTP or gRPC API
-- Use a sensible storage mechanism for the Users
-- Have the ability to notify other interested services of changes to User entities
-- Have meaningful logs
-- Be well documented
-- Have a health check
+- [x] Provide an HTTP 
+- [ ] or gRPC API
+- [x] Use a sensible storage mechanism for the Users
+- [ ] Have the ability to notify other interested services of changes to User entities
+- [ ] Have meaningful logs
+- [ ] Be well documented
+- [x] Have a health check
 
 The service must NOT:
-- Provide login or authentication functionality
+- [x] Provide login or authentication functionality
 
 It is up to you what technologies and patterns you use to implement these features, but you will be
 assessed on these choices and we expect you to be confident in explaining your choice. We encourage the
-use of local alternatives or stubs (for instance a database containerised and linked to your service through
+use of local alternatives or stubs: 
+- [x] (for instance a database containerised and linked to your service through
 docker-compose).
 
 ## Notes
@@ -49,9 +51,9 @@ code. If your solution is becoming overly complex, simply explain what would hav
 and prepare for follow-up questions in the technical interview.
 
 Please also provide a README.md that contains:
-- Instructions to start the application on localhost (dockerised applications are preferred)
-- An explanation of the choices taken and assumptions made during development
-- Possible extensions or improvements to the service (focusing on scalability and deployment to
+- [ ] Instructions to start the application on localhost (dockerised applications are preferred)
+- [ ] An explanation of the choices taken and assumptions made during development
+- [ ] Possible extensions or improvements to the service (focusing on scalability and deployment to
   production)
 
 We expect to be able to run the tests, build the application and run it locally.
