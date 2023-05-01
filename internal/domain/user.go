@@ -26,6 +26,9 @@ func ParseID(id string) (UserID, error) {
 	return uuid.Parse(id)
 }
 
+// User is a domain entity representing a single user
+// I am assuming that password should not be returned from the repository
+// since it's a security risk
 type User struct {
 	ID           UserID
 	FirstName    string
@@ -38,10 +41,17 @@ type User struct {
 	UpdatedAt    time.Time
 }
 
+// Field represents a single user field that can be changed
 type Field string
 
 // Fields represent user fields that can be changes
 type Fields map[Field]string
+
+func (f Fields) AddIfNotNil(key Field, value *string) {
+	if value != nil {
+		f[key] = *value
+	}
+}
 
 func (f Filter) FirstName() *string { return f.firstName }
 func (f Filter) LastName() *string  { return f.lastName }
@@ -49,6 +59,8 @@ func (f Filter) Nickname() *string  { return f.nickname }
 func (f Filter) Email() *string     { return f.email }
 func (f Filter) Country() *string   { return f.country }
 
+// Filter represents a filter that can be used to search users
+// In case a field is nil, it will not be used in the search
 type Filter struct {
 	firstName *string
 	lastName  *string
@@ -61,23 +73,22 @@ func NewFilterEmail(email string) Filter {
 	return Filter{email: &email}
 }
 
+func valueIfNotEmpty(value string) *string {
+	if value == "" {
+		return nil
+	}
+
+	return &value
+}
+
 func NewFilter(firstName, lastName, nickname, email, country string) Filter {
 	filter := Filter{}
-	if firstName != "" {
-		filter.firstName = &firstName
-	}
-	if lastName != "" {
-		filter.lastName = &lastName
-	}
-	if nickname != "" {
-		filter.nickname = &nickname
-	}
-	if email != "" {
-		filter.email = &email
-	}
-	if country != "" {
-		filter.country = &country
-	}
+
+	filter.firstName = valueIfNotEmpty(firstName)
+	filter.lastName = valueIfNotEmpty(lastName)
+	filter.nickname = valueIfNotEmpty(nickname)
+	filter.email = valueIfNotEmpty(email)
+	filter.country = valueIfNotEmpty(country)
 
 	return filter
 }

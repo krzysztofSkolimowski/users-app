@@ -5,6 +5,8 @@ import (
 	"net"
 	"net/http"
 	"os"
+	"strconv"
+	"strings"
 	"users-app/adapters"
 	"users-app/gen/api"
 	users_app "users-app/gen/grpc"
@@ -27,9 +29,18 @@ func main() {
 			Password: os.Getenv("POSTGRES_PASSWORD"),
 		},
 	)
-
 	querySvc := service.NewUserQueryService(repo)
-	commandSvc := service.NewUserCommandService(repo)
+
+	redis := adapters.NewPubSub(adapters.RedisConfig{
+		Host:          getEnvString("REDIS_HOST", "redis"),
+		Port:          getEnvString("REDIS_PORT", "6379"),
+		Password:      getEnvString("REDIS_PASSWORD", ""), // todo - no password set for now
+		DB:            getEnvInt("REDIS_DB", 0),
+		EventsChannel: getEnvString("REDIS_EVENTS_CHANNEL", "events"),
+	})
+
+	commandSvcBase := service.NewUserCommandService(repo)
+	commandSvc := service.NewCommandEventsWrapper(redis, commandSvcBase)
 
 	if getEnvBool("RUN_HTTP", true) {
 		go runHTTPServer(querySvc, commandSvc)
@@ -103,4 +114,18 @@ func getEnvBool(key string, defaultValue bool) bool {
 	}
 
 	return value == "true"
+}
+
+func getEnvInt(s string, i int) int {
+	value, ok := os.LookupEnv(s)
+	if !ok {
+		return i
+	}
+
+	v, err := strconv.Atoi(strings.TrimSpace(value))
+	if err != nil {
+		panic(err)
+	}
+
+	return v
 }

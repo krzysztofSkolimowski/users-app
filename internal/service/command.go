@@ -11,12 +11,12 @@ type UsersCommandService interface {
 	DeleteUser(context.Context, DeleteUserCommand) error
 }
 
-type UserCommandService struct {
+type userCommandService struct {
 	userRepository domain.Repository
 }
 
-func NewUserCommandService(repo domain.Repository) *UserCommandService {
-	return &UserCommandService{repo}
+func NewUserCommandService(repo domain.Repository) UsersCommandService {
+	return userCommandService{repo}
 }
 
 // AddUserCommand is used to add a new user
@@ -29,7 +29,7 @@ type AddUserCommand struct {
 	Country   string
 }
 
-func (u UserCommandService) AddUser(ctx context.Context, toAdd AddUserCommand) (domain.User, error) {
+func (u userCommandService) AddUser(ctx context.Context, toAdd AddUserCommand) (domain.User, error) {
 	user, err := domain.NewUser(toAdd.FirstName, toAdd.LastName, toAdd.Nickname, toAdd.Password, toAdd.Email, toAdd.Country)
 	if err != nil {
 		return domain.User{}, err
@@ -37,7 +37,6 @@ func (u UserCommandService) AddUser(ctx context.Context, toAdd AddUserCommand) (
 
 	users, err := u.userRepository.Users(domain.NewFilterEmail(toAdd.Email), domain.DefaultPagination)
 	if err != nil {
-		// todo - handle errors
 		return domain.User{}, err
 	}
 
@@ -66,28 +65,32 @@ type ModifyUserCommand struct {
 	Country   *string
 }
 
-func (c ModifyUserCommand) fieldsToUpdate() domain.Fields {
-	ret := make(domain.Fields)
-	if c.FirstName != nil {
-		ret["first_name"] = *c.FirstName
-	}
-	if c.LastName != nil {
-		ret["last_name"] = *c.LastName
-	}
-	if c.Nickname != nil {
-		ret["nickname"] = *c.Nickname
-	}
-	if c.Email != nil {
-		ret["email"] = *c.Email
-	}
-	if c.Country != nil {
-		ret["country"] = *c.Country
-	}
-
-	return ret
+// fieldValuePairSlice is a simple helper struct to perform a loop over the fields
+type fieldValuePairSlice []struct {
+	field domain.Field
+	Value *string
 }
 
-func (u UserCommandService) ModifyUser(ctx context.Context, toModify ModifyUserCommand) error {
+// fieldsToUpdate returns a map of fields to update
+// it will only add fields that are not nil
+func (c ModifyUserCommand) fieldsToUpdate() domain.Fields {
+	fieldValuePairs := fieldValuePairSlice{
+		{"first_name", c.FirstName},
+		{"last_name", c.LastName},
+		{"nickname", c.Nickname},
+		{"email", c.Email},
+		{"country", c.Country},
+	}
+
+	fields := make(domain.Fields)
+	for _, pair := range fieldValuePairs {
+		fields.AddIfNotNil(pair.field, pair.Value)
+	}
+
+	return fields
+}
+
+func (u userCommandService) ModifyUser(ctx context.Context, toModify ModifyUserCommand) error {
 	err := u.userRepository.ModifyUser(toModify.ID, toModify.fieldsToUpdate())
 	if err != nil {
 		return err
@@ -101,6 +104,6 @@ type DeleteUserCommand struct {
 	ID domain.UserID
 }
 
-func (u UserCommandService) DeleteUser(ctx context.Context, toDelete DeleteUserCommand) error {
+func (u userCommandService) DeleteUser(ctx context.Context, toDelete DeleteUserCommand) error {
 	return u.userRepository.RemoveUser(toDelete.ID)
 }
