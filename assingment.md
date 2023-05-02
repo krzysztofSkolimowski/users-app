@@ -33,7 +33,7 @@ The service must:
 - [x] or gRPC API
 - [x] Use a sensible storage mechanism for the Users
 - [x] Have the ability to notify other interested services of changes to User entities
-- [ ] Have meaningful logs
+- [x] Have meaningful logs
 - [ ] Be well documented
 - [x] Have a health check
 

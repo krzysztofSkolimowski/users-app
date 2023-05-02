@@ -1,5 +1,12 @@
 # users-app
 
+## Instructions how to start the application
+
+## Explanations of technical choices and assumptions
+
+### Chosen architecture
+
+## Possible extensions or improvements to the service
 
 ### Directories
 
@@ -7,11 +14,3 @@
 - [docker](docker/) Dockerfiles
 - [internal](internal/) application code
 - [scripts](scripts/) deployment and development scripts
-
-
-TODO: 
-- dockerize
-- http serve
-- grpc server
-- redis pub sub - emit events
-- mysql connection

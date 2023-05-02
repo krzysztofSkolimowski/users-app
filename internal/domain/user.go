@@ -97,19 +97,17 @@ var MaxPaginationLimit = 100
 var DefaultPaginationLimit = 10
 var DefaultPagination = Pagination{DefaultPaginationLimit, 0}
 
+func (p Pagination) Limit() int { return p.limit }
+
 type Pagination struct {
 	limit  int
 	Offset int
 }
 
-func (p Pagination) Limit() int {
-	return p.limit
-}
-
 func NewPagination(limit, offset int) Pagination {
 	ret := DefaultPaginationLimit
 	if limit != 0 {
-		ret = max(limit, MaxPaginationLimit)
+		ret = min(limit, MaxPaginationLimit)
 	}
 
 	return Pagination{
@@ -118,7 +116,7 @@ func NewPagination(limit, offset int) Pagination {
 	}
 }
 
-func max(a, b int) int {
+func min(a, b int) int {
 	if a < b {
 		return a
 	}
