@@ -23,7 +23,6 @@ type RepoConfig struct {
 func NewRepository(
 	repositoryConfig RepoConfig,
 ) repository {
-	// todo - load from .env
 	settings := postgresql.ConnectionURL{
 		Host:     repositoryConfig.Host,
 		Database: repositoryConfig.Database,
@@ -44,6 +43,9 @@ func NewRepository(
 	return repository{db: sess}
 }
 
+// AddUser adds a new user to the repository
+// user needs to have a unique id
+// In case of a duplicate id, an error is returned
 func (r repository) AddUser(user domain.User) error {
 	exists, err := r.db.Collection("users").Find(db.Cond{"id": user.ID}).Exists()
 	if err != nil {
@@ -56,6 +58,9 @@ func (r repository) AddUser(user domain.User) error {
 	return r.insert(user)
 }
 
+// ModifyUser modifies a user with the given id
+// user needs to exist before calling this method
+// updates only specified fields
 func (r repository) ModifyUser(id domain.UserID, fields domain.Fields) error {
 	res := r.db.Collection("users").Find(db.Cond{"id": id})
 	exists, err := res.Exists()
@@ -83,11 +88,13 @@ func (r repository) RemoveUser(id domain.UserID) error {
 	return res.Delete()
 }
 
+// Users returns a list of users that match the given filter
+// and are paginated according to the given pagination
 func (r repository) Users(filter domain.Filter, pagination domain.Pagination) ([]domain.User, error) {
 	query := r.db.Collection("users").Find()
 	query = addFilters(filter, query)
 
-	// add pagination
+	// pagination
 	query = query.Limit(pagination.Limit())
 	query = query.Offset(pagination.Offset)
 
@@ -101,6 +108,8 @@ func (r repository) Users(filter domain.Filter, pagination domain.Pagination) ([
 	return toDomainUsers(ret), nil
 }
 
+// addFilters adds filters to the query
+// it will only add filters that are not nil
 func addFilters(filter domain.Filter, q db.Result) db.Result {
 	query := q
 	filterMap := map[string]*string{
@@ -120,17 +129,22 @@ func addFilters(filter domain.Filter, q db.Result) db.Result {
 	return query
 }
 
+// implemented just for integration tests
+// do not use it during normal runtime
 func (r repository) insert(u domain.User) error {
 	_, err := r.db.Collection("users").Insert(fromDomain(u))
 	return err
 }
 
 // implemented just for integration tests
+// do not use it during normal runtime
 func (r repository) flush() {
 	r.db.Collection("users").Truncate()
 }
 
 // implemented just for integration tests
+// returns all users from the database
+// do not use it during normal runtime
 func (r repository) allUsers() ([]domain.User, error) {
 	var users []UserDTO
 	err := r.db.Collection("users").Find().All(&users)

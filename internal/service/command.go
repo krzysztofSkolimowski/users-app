@@ -5,6 +5,7 @@ import (
 	"users-app/domain"
 )
 
+// UsersCommandService is used to add, modify and delete users
 type UsersCommandService interface {
 	AddUser(context.Context, AddUserCommand) (domain.User, error)
 	ModifyUser(context.Context, ModifyUserCommand) error
@@ -65,26 +66,20 @@ type ModifyUserCommand struct {
 	Country   *string
 }
 
-// fieldValuePairSlice is a simple helper struct to perform a loop over the fields
-type fieldValuePairSlice []struct {
-	field domain.Field
-	Value *string
-}
-
 // fieldsToUpdate returns a map of fields to update
 // it will only add fields that are not nil
 func (c ModifyUserCommand) fieldsToUpdate() domain.Fields {
-	fieldValuePairs := fieldValuePairSlice{
-		{"first_name", c.FirstName},
-		{"last_name", c.LastName},
-		{"nickname", c.Nickname},
-		{"email", c.Email},
-		{"country", c.Country},
+	fieldValuePairs := map[domain.Field]*string{
+		"first_name": c.FirstName,
+		"last_name":  c.LastName,
+		"nickname":   c.Nickname,
+		"email":      c.Email,
+		"country":    c.Country,
 	}
 
 	fields := make(domain.Fields)
-	for _, pair := range fieldValuePairs {
-		fields.AddIfNotNil(pair.field, pair.Value)
+	for field, val := range fieldValuePairs {
+		fields.AddIfValIsNotNil(field, val)
 	}
 
 	return fields

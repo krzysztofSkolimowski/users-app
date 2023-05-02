@@ -9,7 +9,9 @@ import (
 	"github.com/go-redis/redis/v8"
 )
 
-type pubSub struct {
+// publisher is a struct used to manage connections to Redis and publish events
+// to the specified Redis channel.
+type publisher struct {
 	client  *redis.Client
 	channel string
 }
@@ -22,7 +24,7 @@ type RedisConfig struct {
 	EventsChannel string
 }
 
-func NewPubSub(redisConfig RedisConfig) pubSub {
+func NewPublisher(redisConfig RedisConfig) publisher {
 	client := redis.NewClient(&redis.Options{
 		Addr:     redisConfig.Host + ":" + redisConfig.Port,
 		Password: redisConfig.Password, // no password set
@@ -34,14 +36,15 @@ func NewPubSub(redisConfig RedisConfig) pubSub {
 		log.Fatal(err)
 	}
 
-	log.Printf("Connected to Redis")
-	return pubSub{client: client}
+	return publisher{client: client}
 }
 
-// PublishEvent todo - refactor to domain Event interface
-func (p pubSub) PublishEvent(ctx context.Context, event domain.Event) error {
+// PublishEvent publishes an event to the Redis channel. Currently, the event is serialized using
+// the fmt.Sprintf function, but it is recommended to use proper event marshalling, such as protobuf or JSON.
+func (p publisher) PublishEvent(ctx context.Context, event domain.Event) error {
 
 	// todo - add proper event marshalling - protobuf, json, etc
 	msg := fmt.Sprintf("%#v", event)
-	return p.client.Publish(context.Background(), p.channel, msg).Err()
+
+	return p.client.Publish(ctx, p.channel, msg).Err()
 }

@@ -47,7 +47,7 @@ type Field string
 // Fields represent user fields that can be changes
 type Fields map[Field]string
 
-func (f Fields) AddIfNotNil(key Field, value *string) {
+func (f Fields) AddIfValIsNotNil(key Field, value *string) {
 	if value != nil {
 		f[key] = *value
 	}
@@ -105,6 +105,10 @@ type Pagination struct {
 }
 
 func NewPagination(limit, offset int) Pagination {
+	if offset < 0 || limit < 0 {
+		return DefaultPagination
+	}
+
 	ret := DefaultPaginationLimit
 	if limit != 0 {
 		ret = min(limit, MaxPaginationLimit)

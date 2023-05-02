@@ -1,4 +1,4 @@
-# TASK
+~~# TASK
 
 To write a small microservice to manage access to Users, the service should be implemented in Go - as
 this is primary language that we use at FACEIT for backend development.
@@ -34,7 +34,7 @@ The service must:
 - [x] Use a sensible storage mechanism for the Users
 - [x] Have the ability to notify other interested services of changes to User entities
 - [x] Have meaningful logs
-- [ ] Be well documented
+- [x] Be well documented
 - [x] Have a health check
 
 The service must NOT:
@@ -45,7 +45,7 @@ It is up to you what technologies and patterns you use to implement these featur
 assessed on these choices and we expect you to be confident in explaining your choice. We encourage the
 use of local alternatives or stubs:
 
-- [x] (for instance a database containerised and linked to your service through
+-~~ [x] (for instance a database containerised and linked to your service through
   docker-compose).
 
 ## Notes
@@ -56,9 +56,9 @@ and prepare for follow-up questions in the technical interview.
 
 Please also provide a README.md that contains:
 
-- [ ] Instructions to start the application on localhost (dockerised applications are preferred)
-- [ ] An explanation of the choices taken and assumptions made during development
-- [ ] Possible extensions or improvements to the service (focusing on scalability and deployment to
+- [x] Instructions to start the application on localhost (dockerised applications are preferred)
+- [x] An explanation of the choices taken and assumptions made during development
+- [x] Possible extensions or improvements to the service (focusing on scalability and deployment to
   production)
 
 We expect to be able to run the tests, build the application and run it locally.

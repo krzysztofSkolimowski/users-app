@@ -8,6 +8,8 @@ import (
 	"github.com/go-redis/redis/v8"
 )
 
+// redis-client is a small program that connects to Redis and subscribes to the events channel.
+// It's used to test the Redis connection and for development of the app
 func main() {
 	// Create a Redis client
 	client := redis.NewClient(&redis.Options{

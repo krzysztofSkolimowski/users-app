@@ -21,6 +21,7 @@ services:
       GOCACHE: /go-cache
     depends_on:
       - db
+      - redis
 
   db:
     image: postgres:15.2

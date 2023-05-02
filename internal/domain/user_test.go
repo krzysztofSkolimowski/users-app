@@ -59,7 +59,7 @@ func TestFields_AddIfNotNil(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			tt.f.AddIfNotNil(tt.key, tt.value)
+			tt.f.AddIfValIsNotNil(tt.key, tt.value)
 			assert.EqualValues(t, tt.expected, tt.f)
 		})
 	}

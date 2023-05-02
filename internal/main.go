@@ -22,6 +22,10 @@ import (
 )
 
 func main() {
+	logger, err := zap.NewProduction()
+	if err != nil {
+		log.Fatalf("failed to create logger: %v", err)
+	}
 	repo := adapters.NewRepository(
 		adapters.RepoConfig{
 			Host:     os.Getenv("DB_HOST"),
@@ -32,24 +36,23 @@ func main() {
 	)
 	querySvc := service.NewUserQueryService(repo)
 
-	redis := adapters.NewPubSub(adapters.RedisConfig{
+	redis := adapters.NewPublisher(adapters.RedisConfig{
 		Host:          getEnvString("REDIS_HOST", "redis"),
 		Port:          getEnvString("REDIS_PORT", "6379"),
 		Password:      getEnvString("REDIS_PASSWORD", ""), // todo - no password set for now
 		DB:            getEnvInt("REDIS_DB", 0),
 		EventsChannel: getEnvString("REDIS_EVENTS_CHANNEL", "events"),
 	})
+	logger.Info("connected to Redis")
 
 	commandSvcBase := service.NewUserCommandService(repo)
 	eventsLogFilePath := getEnvString("EVENTS_LOG_FILE_PATH", "../logs/events.log")
 
-	logger, err := zap.NewProduction()
-	if err != nil {
-		log.Fatalf("failed to create logger: %v", err)
-	}
 	commandSvcLogging := service.NewCommandLoggingWrapper(logger, commandSvcBase)
 
-	commandSvc := service.NewCommandEventsWrapper(redis, commandSvcLogging, adapters.NewEventLogger(eventsLogFilePath))
+	eventsLogger := adapters.NewEventLogger(eventsLogFilePath)
+	defer eventsLogger.Close()
+	commandSvc := service.NewCommandEventsWrapper(redis, commandSvcLogging, eventsLogger)
 
 	if getEnvBool("RUN_HTTP", true) {
 		go runHTTPServer(querySvc, commandSvc)

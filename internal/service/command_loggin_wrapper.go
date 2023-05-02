@@ -8,6 +8,9 @@ import (
 	"go.uber.org/zap"
 )
 
+// CommandLoggingWrapper is a wrapper for UsersCommandService
+// It logs the commands received and the errors returned
+// It's purpose is to decouple the application from the logger
 type CommandLoggingWrapper struct {
 	wrapped UsersCommandService
 	logger  Logger
