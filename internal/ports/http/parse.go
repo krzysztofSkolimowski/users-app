@@ -4,7 +4,7 @@ import (
 	"users-app/domain"
 	"users-app/gen/api"
 
-	"github.com/deepmap/oapi-codegen/pkg/types"
+	"github.com/oapi-codegen/runtime/types"
 )
 
 func filterFromParams(params api.GetUsersParams) domain.Filter {
